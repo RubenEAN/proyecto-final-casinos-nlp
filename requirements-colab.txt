@@ -1,0 +1,4 @@
+# Solo para entrenar BETO en Google Colab con GPU (T4). Versiones con las que se ejecutó el taller de la sesión 4.
+transformers==5.23.0
+torch==2.14.1
+accelerate

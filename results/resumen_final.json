@@ -1,0 +1,78 @@
+{
+  "semilla": 42,
+  "n": {
+    "train": 1455,
+    "validation": 312,
+    "test": 312,
+    "quejas_test": 59,
+    "mixtas_test": 19
+  },
+  "baseline": {
+    "nombre": "TF-IDF caracteres y palabras + regresión logística",
+    "f1_val": 0.6457,
+    "f1_test": 0.626,
+    "recall_test": 0.7966,
+    "f1_mixta_test": 0.381,
+    "log_loss_test": 0.7167,
+    "ic_f1": [
+      0.5539086374757258,
+      0.6903452817982152
+    ],
+    "ic_recall": [
+      0.6875,
+      0.8936170212765957
+    ]
+  },
+  "beto": {
+    "config": "beto_128",
+    "f1_val": 0.7261,
+    "f1_test_media": 0.7066333333333334,
+    "f1_test_std": 0.010889138319138621,
+    "recall_test_media": 0.8757333333333334,
+    "f1_mixta_media": 0.5564999999999999,
+    "log_loss_media": 0.5612666666666667,
+    "diff": 0.07153859161993015,
+    "diff_ic": [
+      0.0027619324493167842,
+      0.1452801927478685
+    ],
+    "ic_f1": [
+      0.6301660844770771,
+      0.7568154679281752
+    ],
+    "p_mejor": 0.98
+  },
+  "abstencion": [
+    {
+      "modelo": "Baseline",
+      "tau": 0.5,
+      "t_neg": 1.01,
+      "cobertura_val": 0.6987179487179487,
+      "recall_queja_con_revision_val": 0.9649122807017544,
+      "cobertura_test": 0.6858974358974359,
+      "revision_test": 0.3141025641025641,
+      "exactitud_automatica_test": 0.8130841121495327,
+      "recall_queja_directo_test": 0.7966101694915254,
+      "recall_queja_con_revision_test": 0.9322033898305084
+    },
+    {
+      "modelo": "BETO (beto_128)",
+      "tau": 0.5,
+      "t_neg": 1.01,
+      "cobertura_val": 0.967948717948718,
+      "recall_queja_con_revision_val": 0.9122807017543859,
+      "cobertura_test": 0.9487179487179487,
+      "revision_test": 0.05128205128205128,
+      "exactitud_automatica_test": 0.7972972972972973,
+      "recall_queja_directo_test": 0.864406779661017,
+      "recall_queja_con_revision_test": 0.8813559322033898
+    }
+  ],
+  "meta": {
+    "mejora_f1": 0.02,
+    "recall_critica": 0.9,
+    "cobertura": 0.75,
+    "latencia_p95_ms": 150
+  },
+  "decision": "piloto_ambos_modelos"
+}

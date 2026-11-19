@@ -1,0 +1,6 @@
+﻿criterio (provisional),meta,resultado,cumple
+Mejora de F1 macro de BETO sobre el baseline (test),≥ +0.02,+0.081,✓
+"Recall de quejas con revisión humana (BETO, test)",≥ 0.90,0.881,✗
+"Cobertura automática (BETO, test)",≥ 75%,94.9%,✓
+"Recall de quejas con revisión humana (baseline, test)",≥ 0.90,0.932,✓
+"Cobertura automática (baseline, test)",≥ 75%,68.6%,✗

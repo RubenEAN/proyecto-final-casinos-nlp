@@ -1,0 +1,9 @@
+MIT License (solo para el CÓDIGO de este repositorio)
+
+Copyright (c) 2026 Equipo del proyecto final de Procesamiento de Lenguaje Natural, Universidad EAN
+
+Se concede permiso, sin cargo, para usar, copiar, modificar y distribuir el código, siempre que se incluya este aviso.
+EL SOFTWARE SE ENTREGA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO.
+
+LOS DATOS NO ESTÁN CUBIERTOS POR ESTA LICENCIA. El corpus (data/corpus_casinos_2100.csv) proviene de un dataset académico sin
+licencia declarada: es de uso exclusivo para el curso y no debe publicarse ni redistribuirse (ver data/DATA_CARD.md).

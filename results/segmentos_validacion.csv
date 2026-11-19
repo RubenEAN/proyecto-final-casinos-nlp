@@ -1,0 +1,8 @@
+segmento,reseñas,exactitud,F1 macro,quejas,recall de quejas,tipo
+1-5 palabras,84,0.714,0.686,6,0.833,longitud
+6-12,125,0.816,0.743,20,0.95,longitud
+13-30,67,0.791,0.641,17,0.824,longitud
+más de 30,36,0.75,0.562,14,0.786,longitud
+2016-2019,144,0.799,0.766,23,0.913,periodo
+2020-2021,58,0.724,0.601,16,0.812,periodo
+2022-2024,110,0.773,0.693,18,0.833,periodo

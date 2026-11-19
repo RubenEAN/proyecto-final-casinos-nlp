@@ -1,0 +1,30 @@
+﻿par,tipo,texto,esperado,n_palabras
+1,negación,La comida es muy rica,positiva,5
+1,negación,La comida no es para nada rica,negativa,7
+2,negación,Las máquinas pagan bien,positiva,4
+2,negación,Las máquinas no pagan nunca,negativa,5
+3,negación,La atención fue excelente,positiva,4
+3,negación,La atención no fue nada buena,negativa,6
+4,negación,El lugar está muy limpio,positiva,5
+4,negación,"El lugar no está limpio, los baños un asco",negativa,9
+5,negación,Me sentí seguro todo el tiempo,positiva,6
+5,negación,"No me sentí seguro, había gente rara en la entrada",negativa,10
+6,contraste,"La comida rica, pero carísima",mixta,5
+7,contraste,"Lindo lugar, aunque el estacionamiento es un robo",mixta,8
+8,contraste,"Muy buena atención, pero las máquinas no pagan nada",mixta,9
+9,contraste,"Las máquinas no pagan, pero la comida es excelente",mixta,9
+10,contraste,El restaurante es hermoso pero los mozos tardan una eternidad,mixta,10
+11,orden,No es caro y la comida es buena,positiva,8
+11,orden,Es caro y la comida no es buena,negativa,8
+12,doble negación,La atención no es mala,positiva,5
+13,ortografía,"exelente atencion, muy amables los mosos",positiva,6
+14,ortografía,"las maquinas no pagan nunk, una berguenza",negativa,7
+15,ortografía,la comida riquisima y bien de presio,positiva,7
+16,mayúsculas y emojis,LA ATENCIÓN UN DESASTRE!!!,negativa,4
+17,mayúsculas y emojis,MUY RICA LA COMIDA 😍😍,positiva,5
+18,ironía,"Excelente, otra vez las máquinas se quedaron con mi plata",negativa,10
+19,ironía,"Qué buena atención, esperé una hora para que me traigan un café",negativa,12
+20,sin aspecto,Fui a ver un recital,no_mencionado,5
+21,sin aspecto,"Queda en Palermo, cerca del parque",no_mencionado,6
+22,fuera del tema,La fotosíntesis depende de la luz solar,no_mencionado,7
+23,texto largo,"Fuimos un sábado con amigos y la verdad que el lugar es enorme y muy lindo, la sala de juegos tiene muchísimas máquinas modernas, el restaurante tiene buena comida y los mozos son atentos, también hay shows y la música estaba buena, nos quedamos varias horas y la pasamos bien, el estacionamiento es cómodo y la entrada es rápida, pero cuando fui a cobrar el premio no me lo quisieron pagar y nadie me dio una explicación",mixta,77

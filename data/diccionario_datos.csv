@@ -1,0 +1,20 @@
+﻿columna,tipo,descripcion,valores
+id,entero,Identificador original de la reseña en el archivo fuente (train_ampliado_102220.csv).,1 a 14841
+periodo,texto AAAA-MM,Mes de la reseña.,2016-12 a 2024-02
+texto,texto,"Texto de la reseña, con espacios normalizados y datos personales enmascarados ([TELEFONO], [NOMBRE]). El corpus original no tiene comas: se reemplazaron por punto y coma.",1 a 256 palabras
+sentimiento,categórica,"Sentimiento general (variable objetivo), derivado de los 12 aspectos: positiva si hay solo aspectos positivos; negativa si hay solo negativos; mixta si hay ambos; no_mencionado si ningún aspecto se menciona.","positiva, negativa, mixta, no_mencionado"
+atencion#gastronomia,categórica,"Opinión sobre la atención en el restaurante o la confitería (mozos, rapidez).","positiva, negativa, neutral"
+atencion#parking,categórica,Opinión sobre la atención en el estacionamiento.,"positiva, negativa, neutral"
+atencion#atencion_cliente,categórica,"Opinión sobre la atención al cliente (recepción, personal, respuestas).","positiva, negativa, neutral"
+calidad#gastronomia,categórica,Opinión sobre la calidad de la comida y el menú.,"positiva, negativa, neutral"
+calidad#slot,categórica,"Opinión sobre las máquinas tragamonedas (variedad, funcionamiento, si pagan).","positiva, negativa, neutral"
+calidad#limpieza,categórica,Opinión sobre la limpieza.,"positiva, negativa, neutral"
+calidad#seguridad,categórica,Opinión sobre la seguridad y el control de ingreso.,"positiva, negativa, neutral"
+precio#gastronomia,categórica,Opinión sobre los precios de la comida.,"positiva, negativa, neutral"
+precio#slot,categórica,Opinión sobre apuestas y premios de las máquinas.,"positiva, negativa, neutral"
+precio#parking,categórica,Opinión sobre la tarifa del estacionamiento.,"positiva, negativa, neutral"
+ambiente_restaurate#gastronomia,categórica,"Ambiente del restaurante. En este corpus también recoge elogios generales del lugar (""hermoso lugar""), por convención de quien anotó.","positiva, negativa, neutral"
+ambiente_sala#slots,categórica,Ambiente de la sala de juegos.,"positiva, negativa, neutral"
+n_palabras,entero,Cantidad de palabras del texto.,1 a 256
+grupo_texto,entero,Identifica reseñas de texto idéntico (ignorando mayúsculas y puntuación). Un grupo nunca se reparte entre particiones.,0 a 2062
+particion,categórica,"train (1.455), validation (312) o test (312). Selección de modelos con validation; test se usa una sola vez.","train, validation, test"

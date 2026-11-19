@@ -1,0 +1,71 @@
+﻿par,tipo,texto,esperado,prediccion,confianza,acierta,modelo
+1,negación,La comida es muy rica,positiva,positiva,0.589,True,Baseline
+1,negación,La comida no es para nada rica,negativa,negativa,0.453,True,Baseline
+2,negación,Las máquinas pagan bien,positiva,negativa,0.682,False,Baseline
+2,negación,Las máquinas no pagan nunca,negativa,negativa,0.945,True,Baseline
+3,negación,La atención fue excelente,positiva,positiva,0.609,True,Baseline
+3,negación,La atención no fue nada buena,negativa,mixta,0.406,False,Baseline
+4,negación,El lugar está muy limpio,positiva,positiva,0.873,True,Baseline
+4,negación,"El lugar no está limpio, los baños un asco",negativa,negativa,0.404,True,Baseline
+5,negación,Me sentí seguro todo el tiempo,positiva,positiva,0.519,True,Baseline
+5,negación,"No me sentí seguro, había gente rara en la entrada",negativa,negativa,0.519,True,Baseline
+6,contraste,"La comida rica, pero carísima",mixta,mixta,0.484,True,Baseline
+7,contraste,"Lindo lugar, aunque el estacionamiento es un robo",mixta,mixta,0.475,True,Baseline
+8,contraste,"Muy buena atención, pero las máquinas no pagan nada",mixta,mixta,0.633,True,Baseline
+9,contraste,"Las máquinas no pagan, pero la comida es excelente",mixta,mixta,0.571,True,Baseline
+10,contraste,El restaurante es hermoso pero los mozos tardan una eternidad,mixta,mixta,0.431,True,Baseline
+11,orden,No es caro y la comida es buena,positiva,mixta,0.444,False,Baseline
+11,orden,Es caro y la comida no es buena,negativa,mixta,0.444,False,Baseline
+12,doble negación,La atención no es mala,positiva,negativa,0.787,False,Baseline
+13,ortografía,"exelente atencion, muy amables los mosos",positiva,positiva,0.882,True,Baseline
+14,ortografía,"las maquinas no pagan nunk, una berguenza",negativa,negativa,0.946,True,Baseline
+15,ortografía,la comida riquisima y bien de presio,positiva,positiva,0.389,True,Baseline
+16,mayúsculas y emojis,LA ATENCIÓN UN DESASTRE!!!,negativa,negativa,0.557,True,Baseline
+17,mayúsculas y emojis,MUY RICA LA COMIDA 😍😍,positiva,positiva,0.601,True,Baseline
+18,ironía,"Excelente, otra vez las máquinas se quedaron con mi plata",negativa,negativa,0.682,True,Baseline
+19,ironía,"Qué buena atención, esperé una hora para que me traigan un café",negativa,positiva,0.462,False,Baseline
+20,sin aspecto,Fui a ver un recital,no_mencionado,no_mencionado,0.679,True,Baseline
+21,sin aspecto,"Queda en Palermo, cerca del parque",no_mencionado,no_mencionado,0.585,True,Baseline
+22,fuera del tema,La fotosíntesis depende de la luz solar,no_mencionado,no_mencionado,0.559,True,Baseline
+23,texto largo,"Fuimos un sábado con amigos y la verdad que el lugar es enorme y muy lindo, la sala de juegos tiene muchísimas máquinas modernas, el restaurante tiene buena comida y los mozos son atentos, también hay shows y la música estaba buena, nos quedamos varias horas y la pasamos bien, el estacionamiento es cómodo y la entrada es rápida, pero cuando fui a cobrar el premio no me lo quisieron pagar y nadie me dio una explicación",mixta,mixta,0.528,True,Baseline
+100,fuera de dominio,La fotosíntesis depende de la luz solar,no_mencionado,no_mencionado,0.559,True,Baseline
+101,fuera de dominio,asdkjh qwerty,no_mencionado,no_mencionado,0.597,True,Baseline
+102,fuera de dominio,😀😀😀,no_mencionado,no_mencionado,0.658,True,Baseline
+103,fuera de dominio,The service was great and the food too,no_mencionado,no_mencionado,0.508,True,Baseline
+104,fuera de dominio,12345 67890,no_mencionado,no_mencionado,0.647,True,Baseline
+105,fuera de dominio,Compro y vendo autos usados,no_mencionado,no_mencionado,0.385,True,Baseline
+1,negación,La comida es muy rica,positiva,positiva,0.825,True,BETO
+1,negación,La comida no es para nada rica,negativa,negativa,0.933,True,BETO
+2,negación,Las máquinas pagan bien,positiva,negativa,0.548,False,BETO
+2,negación,Las máquinas no pagan nunca,negativa,negativa,0.962,True,BETO
+3,negación,La atención fue excelente,positiva,positiva,0.636,True,BETO
+3,negación,La atención no fue nada buena,negativa,negativa,0.876,True,BETO
+4,negación,El lugar está muy limpio,positiva,positiva,0.85,True,BETO
+4,negación,"El lugar no está limpio, los baños un asco",negativa,negativa,0.919,True,BETO
+5,negación,Me sentí seguro todo el tiempo,positiva,no_mencionado,0.813,False,BETO
+5,negación,"No me sentí seguro, había gente rara en la entrada",negativa,negativa,0.811,True,BETO
+6,contraste,"La comida rica, pero carísima",mixta,mixta,0.662,True,BETO
+7,contraste,"Lindo lugar, aunque el estacionamiento es un robo",mixta,mixta,0.882,True,BETO
+8,contraste,"Muy buena atención, pero las máquinas no pagan nada",mixta,mixta,0.492,True,BETO
+9,contraste,"Las máquinas no pagan, pero la comida es excelente",mixta,mixta,0.751,True,BETO
+10,contraste,El restaurante es hermoso pero los mozos tardan una eternidad,mixta,mixta,0.887,True,BETO
+11,orden,No es caro y la comida es buena,positiva,positiva,0.765,True,BETO
+11,orden,Es caro y la comida no es buena,negativa,negativa,0.95,True,BETO
+12,doble negación,La atención no es mala,positiva,negativa,0.509,False,BETO
+13,ortografía,"exelente atencion, muy amables los mosos",positiva,positiva,0.917,True,BETO
+14,ortografía,"las maquinas no pagan nunk, una berguenza",negativa,negativa,0.965,True,BETO
+15,ortografía,la comida riquisima y bien de presio,positiva,positiva,0.884,True,BETO
+16,mayúsculas y emojis,LA ATENCIÓN UN DESASTRE!!!,negativa,negativa,0.747,True,BETO
+17,mayúsculas y emojis,MUY RICA LA COMIDA 😍😍,positiva,no_mencionado,0.401,False,BETO
+18,ironía,"Excelente, otra vez las máquinas se quedaron con mi plata",negativa,negativa,0.78,True,BETO
+19,ironía,"Qué buena atención, esperé una hora para que me traigan un café",negativa,mixta,0.475,False,BETO
+20,sin aspecto,Fui a ver un recital,no_mencionado,no_mencionado,0.893,True,BETO
+21,sin aspecto,"Queda en Palermo, cerca del parque",no_mencionado,no_mencionado,0.882,True,BETO
+22,fuera del tema,La fotosíntesis depende de la luz solar,no_mencionado,no_mencionado,0.633,True,BETO
+23,texto largo,"Fuimos un sábado con amigos y la verdad que el lugar es enorme y muy lindo, la sala de juegos tiene muchísimas máquinas modernas, el restaurante tiene buena comida y los mozos son atentos, también hay shows y la música estaba buena, nos quedamos varias horas y la pasamos bien, el estacionamiento es cómodo y la entrada es rápida, pero cuando fui a cobrar el premio no me lo quisieron pagar y nadie me dio una explicación",mixta,positiva,0.6,False,BETO
+100,fuera de dominio,La fotosíntesis depende de la luz solar,no_mencionado,no_mencionado,0.633,True,BETO
+101,fuera de dominio,asdkjh qwerty,no_mencionado,no_mencionado,0.515,True,BETO
+102,fuera de dominio,😀😀😀,no_mencionado,no_mencionado,0.731,True,BETO
+103,fuera de dominio,The service was great and the food too,no_mencionado,positiva,0.368,False,BETO
+104,fuera de dominio,12345 67890,no_mencionado,no_mencionado,0.684,True,BETO
+105,fuera de dominio,Compro y vendo autos usados,no_mencionado,no_mencionado,0.744,True,BETO

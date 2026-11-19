@@ -1,0 +1,23 @@
+{
+  "semilla": 42,
+  "baseline": "TF-IDF caracteres y palabras + regresión logística",
+  "beto_config": "beto_128",
+  "beto_listo": true,
+  "meta": {
+    "mejora_f1": 0.02,
+    "recall_critica": 0.9,
+    "cobertura": 0.75,
+    "latencia_p95_ms": 150
+  },
+  "versiones": {
+    "python": "3.11.9",
+    "sklearn": "1.9.1",
+    "pandas": "3.0.6"
+  },
+  "conclusiones": [
+    "Baseline (TF-IDF caracteres y palabras + regresión logística): F1 macro 0.626 en test; recall de quejas 0.797 sin revisión y 0.932 con revisión humana, con cobertura automática de 68.6%.",
+    "BETO (beto_128): F1 macro 0.707 ± 0.011 en test (3 semillas); recall de quejas 0.876 sin revisión y 0.881 con revisión, con cobertura de 94.9%.",
+    "Diferencia BETO − baseline en F1 macro: +0.072 (IC95 % +0.003 a +0.145). El intervalo no incluye el 0: la mejora no es ruido.",
+    "El test tiene 59 quejas y 19 reseñas mixtas: las diferencias pequeñas no son concluyentes."
+  ]
+}
