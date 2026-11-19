@@ -336,6 +336,7 @@ tabla(['Riesgo', 'Control', 'Responsable', 'Residual'], [
     ['Uso en otro casino o canal sin volver a probar', 'Declarar el límite; piloto en modo sombra', 'Gerencia IA', 'Medio']], 'Tabla 14. Riesgos principales', [4.5, 6.4, 2.9, 1.7])
 h2('Privacidad, sesgo y seguridad')
 bl(['**Privacidad:** minimización (solo texto y fecha), enmascarado de teléfonos y nombres, acceso restringido y sin identificador del autor. Falta una revisión manual de una muestra.',
+    '**Retención:** en el curso, los datos se conservan solo mientras dure el proyecto y se eliminan después. En producción se propone guardar solo el texto y la fecha, por el tiempo mínimo necesario para auditar y reentrenar; el plazo lo define el cliente.',
     '**Sesgo y segmentos:** solo se pudo medir por longitud y periodo. No es posible medir equidad por sede, canal o tipo de cliente con estos datos; se declara como límite.',
     '**Seguridad y trazabilidad:** la demo calcula todo en el navegador; el repositorio es privado; se versionan modelo, vocabulario, partición, umbral y métricas.'])
 h2('Operación')
@@ -345,6 +346,12 @@ bl(['**Dueño del modelo:** una persona de Gerencia IA, con un suplente de Machi
     '**Suspensión:** el recall de quejas auditado baja de 0,90; la carga de revisión supera la capacidad del equipo; o cambia el tipo de comentarios.',
     '**Rollback:** volver al baseline con revisión humana, que es simple y está medido.',
     '**Despliegue:** piloto en modo sombra (el modelo corre en paralelo sin decidir y se compara con las decisiones humanas); luego uso con revisión de los casos dudosos. La duración la define el cliente.'])
+tabla(['Fase', 'Qué se hace', 'Criterio para pasar a la siguiente', 'Responsable'], [
+    ['0. Preparación', 'Validar las metas con el cliente, escribir la guía de anotación, revisar una muestra de datos personales, confirmar la licencia y medir beto_128_min', 'Metas validadas y datos autorizados', 'Gerencia IA y Ciencia de Datos'],
+    ['1. Modo sombra', 'El baseline y BETO corren en paralelo sin decidir; una muestra auditada de quejas se compara con las decisiones humanas', 'Recall auditado de al menos 0,90 con el umbral ajustado y una carga de revisión atendible', 'Machine Learning'],
+    ['2. Uso con revisión humana', 'El modelo elegido decide los casos seguros y una persona revisa los dudosos y los fuera de dominio', 'Monitoreo estable y ninguna condición de suspensión', 'Gerencia IA'],
+    ['3. Operación', 'Monitoreo, reentrenamiento (dos alertas seguidas o 500 comentarios nuevos anotados) y rollback al baseline si hace falta', 'No aplica: operación continua', 'Gerencia IA y Machine Learning']],
+    'Tabla 14b. Hoja de ruta de piloto y despliegue (la duración de cada fase la define el cliente)', [2.6, 5.8, 4.4, 2.7])
 
 # ---- 6 Caso de valor
 h1('6. Caso de valor')

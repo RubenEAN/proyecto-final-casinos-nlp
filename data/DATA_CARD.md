@@ -5,6 +5,7 @@
 ## Origen y permisos
 
 - **Qué son:** 2.079 reseñas de Google Maps sobre un casino e hipódromo de Buenos Aires, de 2016-12 a 2024-02.
+- **Tipo de datos:** anonimizados: se enmascararon un teléfono y una firma con nombre propio (ver la sección de privacidad).
 - **Fuente:** las 2.100 filas con casino "No especificado (registro original)" del archivo `train_ampliado_102220.csv` entregado para el curso. Corresponden al dataset académico `comentarios_tp_v2`, que se usó en las clases 1 a 4.
 - **Licencia y uso:** uso académico. El dataset no declara una licencia explícita, por lo que **no debe publicarse ni redistribuirse** fuera del curso.
 
