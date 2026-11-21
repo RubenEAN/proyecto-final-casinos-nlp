@@ -80,32 +80,31 @@ S = [
   f"Veamos las quejas. De {N['quejas_test']} quejas en prueba, el modelo etiqueta {q_b_dir} como queja, el {pc(B['recall_test'], 0)}. Otras {q_b - q_b_dir} pasan a una persona porque el modelo no está seguro. Eso da **{q_b} de {N['quejas_test']}, el {pc(ab_b['recall_queja_con_revision_test'])}**, y cumple la meta de 0,90. "
   f"Se nos escapan {N['quejas_test'] - q_b}, que el modelo clasificó con seguridad como otra cosa. Y para lograrlo se revisa casi un tercio de los comentarios: el sistema decide solo el {pc(ab_b['cobertura_test'])}, por debajo de la meta del 75 %. "
   f"La clase más difícil es la mixta, con F1 de {f(B['f1_mixta_test'])}, y en prueba solo hay {N['mixtas_test']}.", None),
- (9, 'BETO frente al baseline', 'M', 'Modelado', 1.5,
+ (9, 'BETO frente al baseline', 'M', 'Modelado', 2.0,
   f"BETO obtiene un F1 macro medio de **{f(BE['f1_test_media'])}**, con una desviación de {f(BE['f1_test_std'])} entre semillas: {f(dm)} más que el baseline. "
   f"Con la corrida de la semilla 42, la diferencia es de {f(BE['diff'])} y su intervalo va de **{f(BE['diff_ic'][0])} a {f(BE['diff_ic'][1])}**. Ese intervalo apenas excluye el cero y es muy ancho: BETO probablemente mejora, pero con {N['quejas_test']} quejas no podemos precisar cuánto. "
   f"Los dos quedan en puntos de operación distintos. BETO decide solo el {pc(ab_e['cobertura_test'], 0)} y deja el {pc(ab_e['revision_test'], 0)} a revisión; el baseline deja el {pc(ab_b['revision_test'], 0)}. "
   f"Con esa revisión, BETO encuentra el {pc(ab_e['recall_queja_con_revision_test'])} de las quejas, {q_e} de {N['quejas_test']}: {q_b - q_e} menos que el baseline, bajo la meta de 0,90, aunque esa diferencia no es concluyente. "
   f"El costo de BETO: unos 110 millones de parámetros y una GPU para responder en cerca de {lat['gpu_p95']:.0f} milisegundos; en CPU tarda unos {lat['cpu_p95']:.0f}.", None),
- (10, 'Peso y tiempo de procesamiento', 'M', 'Modelado', 1.0,
-  f"El baseline pesa menos de 1 megabyte, se entrena en un par de segundos en una CPU y responde en unos {lat_b:.0f} milisegundos. "
-  f"BETO tiene {costo_e_params:.0f} millones de parámetros, unos 440 megabytes, tarda alrededor de un minuto por corrida en una GPU y responde en {lat['gpu_p95']:.0f} milisegundos con GPU, pero {lat['cpu_p95']:.0f} en CPU. "
-  "¿Por qué? El baseline multiplica un vector de TF-IDF por unos 70 mil coeficientes; BETO pasa cada palabra por 12 capas de atención con 110 millones de pesos. "
-  "Dentro del baseline, los n-gramas de caracteres pesan más que los de palabras. Por eso BETO necesita una GPU, o aceptar la espera en CPU.", None),
- (11, 'Dónde se equivoca', 'D', 'Resultados', 1.0,
+ (10, 'Dónde se equivoca', 'D', 'Resultados', 1.0,
   f"Miremos los errores en validación: el baseline se equivoca en {len(err_b)} de {N['validation']} reseñas y BETO en {len(err_e)}. "
   f"En BETO, **{amb} de {len(err_e)} errores** son confusiones entre positiva y no mencionado: son elogios generales, como \"excelente pasatiempo\", que a veces se anotaron como positivos y a veces no. "
   "Es un problema de etiquetas, no de modelo. Se arregla con una guía de anotación, no con un modelo más grande. Las causas que mostramos las asigna una regla automática y el equipo debe revisarlas.", None),
- (12, 'Cuánto decide solo el sistema', 'D', 'Resultados', 1.0,
+ (11, 'Cuánto decide solo el sistema', 'D', 'Resultados', 1.0,
   "Como cada modelo usa un umbral distinto, comparar sus recalls directamente confunde. Entonces fijamos **la misma carga de revisión** y lo medimos en validación. "
   f"Con el 5 % de casos a revisión, BETO encuentra {int(g('BETO', 5, 'quejas_encontradas'))} de {int(g('BETO', 5, 'quejas_totales'))} quejas y el baseline {int(g('Baseline', 5, 'quejas_encontradas'))}; el baseline necesita cerca del 20 % para igualarlo. "
   f"Con una carga alta, del 31 %, el baseline gana por {int(g('Baseline', 31, 'quejas_encontradas') - g('BETO', 31, 'quejas_encontradas'))} quejas. Y en todos los niveles BETO acierta más en lo que decide solo. "
   "Son 57 quejas y una sola corrida de BETO: es un indicio que el piloto debe confirmar.", None),
- (13, 'Robustez', 'D', 'Resultados', 1.0,
+ (12, 'Robustez', 'D', 'Resultados', 1.0,
   "Probamos 35 casos escritos por nosotros. El baseline acierta todos los de contraste, pero falla en orden de palabras y en doble negación, porque TF-IDF no ve el orden. BETO sí acierta el orden, 2 de 2. "
   f"Pero BETO tiene una fragilidad: en MAYÚSCULAS su F1 macro cae de {f(pb.loc['original', 'f1_macro'])} a **{f(pb.loc['MAYÚSCULAS', 'f1_macro'])}**, y cambia el {str(pb.loc['MAYÚSCULAS', 'cambian_pct']).replace('.', ',')} % de las predicciones. "
   "Pasar el texto a minúsculas debería corregirlo, pero falta medirlo. "
   "Con textos sin sentido, el baseline les asigna una clase con 56 % a 66 % de confianza, sobre el umbral, así que la confianza sola los dejaría pasar; la **guardia de vocabulario** los envía a revisión, 6 de 6, y solo marca el 3,5 % de las reseñas reales.",
-  "Y ahora el perfil de Machine Learning nos muestra el sistema funcionando."),
+  "Ahora el perfil de Machine Learning explica el costo de cada modelo y nos muestra el sistema funcionando."),
+ (13, 'Peso y tiempo de procesamiento', 'M', 'Modelado', 0.5,
+  f"Un dato rápido sobre el costo. El baseline pesa menos de 1 megabyte y responde en unos {lat_b:.0f} milisegundos en una CPU. "
+  f"BETO tiene {costo_e_params:.0f} millones de parámetros, unos 440 megabytes, y responde en {lat['gpu_p95']:.0f} milisegundos con GPU, pero {lat['cpu_p95']:.0f} en CPU. "
+  "Pesa más porque cada palabra pasa por 12 capas de atención; por eso necesita GPU.", "Ahora sí, veamos el sistema funcionando."),
  (14, 'Demostración', 'M', 'Demo', 2.0, 'Ver el guion de la demo en la sección 4.', "Volvemos a las diapositivas: el perfil de Gerencia IA cierra con costos, riesgos y la recomendación."),
  (15, 'Costo y caso de valor', 'G', 'Modelado', 1.0,
   f"Ya vimos que BETO pesa mucho más; ¿qué significa eso en costos? Hay que sumar la GPU para servirlo, la revisión humana de los casos dudosos, el monitoreo y el reentrenamiento. Falta cotizar la GPU. "
@@ -172,8 +171,8 @@ TAB(['Diap.', 'Título', 'Bloque', 'Rol que presenta', 'Minutos', 'Acumulado'], 
 tot = {r: sum(mi for _, _, rr, _, mi, _, _ in S if rr == r) for r in ROLES}; blq = {}
 for _, _, _, bl, mi, _, _ in S: blq[bl] = blq.get(bl, 0) + mi
 TAB(['Rol', 'Minutos', 'Diapositivas'], [[ROLES[r], f'{tot[r]:g}', ', '.join(str(n) for n, _, rr, *_ in S if rr == r)] for r in ROLES], [5, 2.5, 8])
-Pp('**Distribución por bloques pedida en los lineamientos:** problema ' + f"{blq['Problema']:g}" + ' min, datos ' + f"{blq['Datos']:g}" + ', modelado ' + f"{blq['Modelado']:g}" + ', resultados ' + f"{blq['Resultados']:g}" + ', demo ' + f"{blq['Demo']:g}" + ', riesgos ' + f"{blq['Riesgos']:g}" + ', recomendación ' + f"{blq['Recomendación']:g}" + f". Total: {sum(blq.values()):g} minutos. El costo y el caso de valor (diapositiva 15) cuentan dentro del bloque de modelado y se presentan después de la demo. Las diapositivas 18 (anexo) y 19 y 20 (observabilidad, hechas por el equipo) no se presentan: quedan de respaldo para preguntas, sobre todo la de monitoreo.")
-Pp('**Si el equipo tiene cuatro voces:** el bloque de Machine Learning se puede repartir. Una persona presenta las diapositivas 7 a 10 (modelado) y otra hace la demostración (14), que es práctica y se beneficia de un ritmo distinto.')
+Pp('**Distribución por bloques pedida en los lineamientos:** problema ' + f"{blq['Problema']:g}" + ' min, datos ' + f"{blq['Datos']:g}" + ', modelado ' + f"{blq['Modelado']:g}" + ', resultados ' + f"{blq['Resultados']:g}" + ', demo ' + f"{blq['Demo']:g}" + ', riesgos ' + f"{blq['Riesgos']:g}" + ', recomendación ' + f"{blq['Recomendación']:g}" + f". Total: {sum(blq.values()):g} minutos. El peso y tiempo de cada modelo (diapositiva 13) y el costo y caso de valor (diapositiva 15) cuentan dentro del bloque de modelado. Las diapositivas 18 (anexo) y 19 y 20 (observabilidad, hechas por el equipo) no se presentan: quedan de respaldo para preguntas, sobre todo la de monitoreo.")
+Pp('**Si el equipo tiene cuatro voces:** el bloque de Machine Learning se puede repartir. Una persona presenta las diapositivas 7 a 9 (modelado) y otra hace el peso y tiempo (13) y la demostración (14), que es práctica y se beneficia de un ritmo distinto.')
 
 H2('2. Cómo usar el guion')
 BUL(['Cada diapositiva tiene una cifra principal. Se dice la cifra y se explica con el texto de abajo; no se lee la diapositiva.', 'El texto está escrito para hablarse a unas 130 palabras por minuto. Al lado de cada título aparece el tiempo y el acumulado.',
