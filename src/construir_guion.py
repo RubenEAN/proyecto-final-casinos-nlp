@@ -15,7 +15,7 @@ from docx.shared import Pt, RGBColor, Cm
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES, DATA, DOCS = os.path.join(RAIZ, 'results'), os.path.join(RAIZ, 'data'), os.path.join(RAIZ, 'docs')
-EDGE = next((e for e in [r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'] if os.path.exists(e)), None)
+EDGE = next((e for e in [r'C:\Program Files\Google\Chrome\Application\chrome.exe', r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe', r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'] if os.path.exists(e)), None)
 J = lambda n: json.load(open(os.path.join(RES, n), encoding='utf-8'))
 resumen = J('resumen_final.json'); B, BE, N, META = resumen['baseline'], resumen['beto'], resumen['n'], resumen['meta']
 ab_b, ab_e = resumen['abstencion'][0], resumen['abstencion'][1]

@@ -3,7 +3,7 @@ Construye la presentación final (PPTX editable + PDF) a partir de results/ y de
 
 Requisitos: haber ejecutado el notebook y src/construir_informe.py (que deja las figuras en docs/figuras/).
 Las cifras salen de results/; si no hay resultados de BETO, la diapositiva 9 lo indica y se completa al volver a ejecutar.
-El PDF se genera con Microsoft Edge (solo para revisar y repartir; el entregable es el PPTX).
+El PDF se genera con Chrome o Edge (solo para revisar y repartir; el entregable es el PPTX).
 
 Uso (desde la carpeta del repositorio):
     python src/construir_presentacion.py
@@ -14,7 +14,7 @@ from xml.sax.saxutils import escape
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES, DATA, DOCS = os.path.join(RAIZ, 'results'), os.path.join(RAIZ, 'data'), os.path.join(RAIZ, 'docs'); FIG = os.path.join(DOCS, 'figuras')
-EDGE = next((e for e in [r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'] if os.path.exists(e)), None)
+EDGE = next((e for e in [r'C:\Program Files\Google\Chrome\Application\chrome.exe', r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe', r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'] if os.path.exists(e)), None)
 W_IN, H_IN, EMU = 13.333, 7.5, 914400
 INK, MUTED, LINE, PANEL, BG = '17233B', '55637D', 'D5DDEA', 'FFFFFF', 'F4F7FB'
 AZUL, VERDE, AMBAR, ROJO, NAVY = '2D6BDB', '0F8F6B', 'B86E00', 'C23B3B', '1F3A6E'
@@ -157,13 +157,14 @@ for i, t in enumerate(['**Mismos datos y métricas** para todos; semilla 42 (y 4
     x = 0.55 + (i % 2) * 6.2; y = 4.5 + (i // 2) * 0.82; rect(s, x, y, 6.0, 0.7, fill=PANEL, line=LINE, r=0.1); text(s, x + 0.15, y, 5.7, 0.7, [P(t, 13.5, INK, space=0)], anchor='m')
 
 # 8 Baseline
+lr_ = base_val[base_val.modelo.str.contains('regresión')].f1_macro_val
 s = nueva('Resultado del baseline: detecta 4 de 5 quejas y, con revisión, más de 9 de 10', 'M')
 tile(s, 0.55, 1.5, 2.9, 1.7, f(B['f1_test']), f"F1 macro en test\nIC 95 %: {f(B['ic_f1'][0])} a {f(B['ic_f1'][1])}", AZUL, 34)
 tile(s, 3.65, 1.5, 2.9, 1.7, pc(B['recall_test'], 0), f"de las quejas, directo\n({int(round(B['recall_test'] * N['quejas_test']))} de {N['quejas_test']})", ROJO, 34)
 tile(s, 6.75, 1.5, 2.9, 1.7, pc(b_ab['recall_queja_con_revision_test'], 0), 'de las quejas, con revisión\nhumana de los casos dudosos', VERDE, 34)
 tile(s, 9.85, 1.5, 2.9, 1.7, pc(b_ab['cobertura_test'], 0), f"decide solo el sistema\n(meta: {pc(META['cobertura'], 0)})", AMBAR, 34)
-tabla(s, 0.55, 3.5, 7.6, [4.2, 1.1, 1.1, 1.2], [['Baseline (validación, 312 reseñas)', 'F1 macro', 'Recall', 'F1 mixta']] + [[r.modelo.replace('TF-IDF ', '').replace(' + ', ' + '), f(r.f1_macro_val), f(r.recall_negativa_val), f(r.f1_mixta_val)] for r in base_val.head(5).itertuples()], size=11.5, rh=0.42)
-text(s, 8.5, 3.45, 4.3, 3.4, [P('Cómo leerlo', 16, NAVY, True, space=4), P('El recall con revisión **cumple la meta** de 0,90; la cobertura **no llega** a 75 %.', 14.5, INK, bullet=True), P('Las 6 variantes quedan cerca entre sí: con 312 reseñas las diferencias pequeñas son ruido.', 14.5, INK, bullet=True),
+tabla(s, 0.55, 3.5, 7.6, [4.2, 1.1, 1.1, 1.2], [['Baseline (validación, 312 reseñas)', 'F1 macro', 'Recall', 'F1 mixta']] + [[r.modelo.replace('TF-IDF ', '').replace(' + ', ' + '), f(r.f1_macro_val), f(r.recall_negativa_val), f(r.f1_mixta_val)] for r in base_val.itertuples()], size=11.5, rh=0.42)
+text(s, 8.5, 3.45, 4.3, 3.4, [P('Cómo leerlo', 16, NAVY, True, space=4), P('El recall con revisión **cumple la meta** de 0,90; la cobertura **no llega** a 75 %.', 14.5, INK, bullet=True), P(f"Las 3 regresiones logísticas quedan juntas (F1 de {f(lr_.min(), 2)} a {f(lr_.max(), 2)}): con 312 reseñas esa diferencia es ruido. Naive Bayes tiene el mayor recall, pero no acierta ninguna mixta.", 14.5, INK, bullet=True),
                           P(f"La clase mixta es la más difícil (F1 de {f(B['f1_mixta_test'])}): solo hay {N['mixtas_test']} en test.", 14.5, INK, bullet=True)])
 
 # 9 BETO

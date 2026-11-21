@@ -6,7 +6,7 @@ el informe lo indica con recuadros "PENDIENTE" que desaparecen solos cuando se c
 el notebook y este script.
 
 Uso (desde la carpeta del repositorio):
-    python src/construir_informe.py            # genera docs/Informe_Tecnico.docx y docs/Informe_Tecnico.pdf (PDF requiere Microsoft Edge)
+    python src/construir_informe.py            # genera docs/Informe_Tecnico.docx y docs/Informe_Tecnico.pdf (el PDF requiere Chrome o Microsoft Edge)
 """
 import json, os, re, subprocess, sys, shutil, tempfile, html, unicodedata
 import numpy as np, pandas as pd, joblib
@@ -437,8 +437,8 @@ def render_html(ruta):
     out.append('</body></html>'); open(ruta, 'w', encoding='utf-8').write('\n'.join(out))
 
 def pdf_con_edge(ruta_html, ruta_pdf):
-    edge = next((e for e in [r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'] if os.path.exists(e)), None)
-    if not edge: print('Microsoft Edge no encontrado: se omite el PDF'); return False
+    edge = next((e for e in [r'C:\Program Files\Google\Chrome\Application\chrome.exe', r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe', r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe', r'C:\Program Files\Microsoft\Edge\Application\msedge.exe'] if os.path.exists(e)), None)
+    if not edge: print('Chrome o Edge no encontrado: se omite el PDF'); return False
     perfil = tempfile.mkdtemp()
     subprocess.run([edge, '--headless=new', '--disable-gpu', f'--user-data-dir={perfil}', '--no-pdf-header-footer', '--virtual-time-budget=4000', f'--print-to-pdf={ruta_pdf}', 'file:///' + ruta_html.replace('\\', '/')], capture_output=True, timeout=180)
     shutil.rmtree(perfil, ignore_errors=True); return os.path.exists(ruta_pdf)
