@@ -68,9 +68,9 @@ def marco(s, titulo, rol=None, n=None):
     text(s, 0.55, 7.08, 9, 0.3, [P('Procesamiento de Lenguaje Natural · Universidad EAN · Proyecto final', 10, MUTED, space=0)])
     if n: text(s, 12.0, 7.08, 0.8, 0.3, [P(str(n), 10, MUTED, align='r', space=0)])
 
-def tile(s, x, y, w, h, grande, chico, color=AZUL, gs=30):
+def tile(s, x, y, w, h, grande, chico, color=AZUL, gs=30, pie=None):
     rect(s, x, y, w, h, fill=PANEL, line=LINE, r=0.12)
-    text(s, x, y + 0.12, w, h * 0.55, [P(grande, gs, color, True, 'c', space=0)], anchor='m'); text(s, x + 0.1, y + h * 0.58, w - 0.2, h * 0.4, [P(l_, 12.5, MUTED, align='c', space=0) for l_ in chico.split(chr(10))], anchor='t')
+    text(s, x, y + 0.12, w, h * 0.55, [P(grande, gs, color, True, 'c', space=0)], anchor='m'); text(s, x + 0.1, y + h * 0.58, w - 0.2, h * 0.4, [P(l_, 12.5, MUTED, align='c', space=0) for l_ in chico.split(chr(10))] + ([P(pie, 11, INK, True, 'c', space=0)] if pie else []), anchor='t')
 
 # ------------------------------------------------------------------ diapositivas
 S = []
@@ -172,16 +172,19 @@ text(s, 8.5, 3.45, 4.3, 3.4, [P('Cómo leerlo', 16, NAVY, True, space=4), P('El 
 s = nueva('BETO frente al baseline: ¿justifica su costo?', 'M')
 if BETO:
     dm = BETO['f1_test_media'] - B['f1_test']; lo = BETO['diff_ic'][0]
-    tile(s, 0.55, 1.5, 2.9, 1.7, f(B['f1_test']), 'F1 macro baseline (test)', AZUL, 34); tile(s, 3.65, 1.5, 2.9, 1.7, f(BETO['f1_test_media']), f"F1 macro BETO (test)\nmedia de 3 semillas ± {f(BETO['f1_test_std'])}", VERDE, 34)
-    tile(s, 6.75, 1.5, 2.9, 1.7, f"{dm:+.3f}".replace('.', ','), f"diferencia de medias\nsemilla 42: IC {f(lo)} a {f(BETO['diff_ic'][1])}", AMBAR if lo < META['mejora_f1'] else VERDE, 34)
-    tile(s, 9.85, 1.5, 2.9, 1.7, pc(ab_beto['recall_queja_con_revision_test'], 0) if ab_beto else '—', 'de las quejas con revisión (BETO)\nbaseline: ' + pc(b_ab['recall_queja_con_revision_test'], 0), ROJO, 34)
-    tabla(s, 0.55, 3.5, 7.3, [2.4, 1.6, 1.6, 1.7], [['Test', 'Baseline', 'BETO', 'Meta']] + [['F1 macro', f(B['f1_test']), f(BETO['f1_test_media']), f"+{f(META['mejora_f1'], 2)}"], ['Decide solo', pc(b_ab['cobertura_test']), pc(ab_beto['cobertura_test']), '≥ ' + pc(META['cobertura'], 0)],
+    q_dir_b = int(round(b_ab['recall_queja_directo_test'] * N['quejas_test'])); q_dir_e = int(round(ab_beto['recall_queja_directo_test'] * N['quejas_test']))
+    q_rev_b = int(round(b_ab['recall_queja_con_revision_test'] * N['quejas_test'])); q_rev_e = int(round(ab_beto['recall_queja_con_revision_test'] * N['quejas_test']))
+    tile(s, 0.55, 1.5, 2.9, 1.9, f(BETO['f1_test_media']), f"BETO: F1 macro en test\nmedia de 3 semillas ± {f(BETO['f1_test_std'])}", AZUL, 34, pie=f"Baseline: {f(B['f1_test'])} (BETO {dm:+.3f})".replace('.', ','))
+    tile(s, 3.65, 1.5, 2.9, 1.9, pc(ab_beto['recall_queja_directo_test'], 0), f"BETO: de las quejas, directo\n({q_dir_e} de {N['quejas_test']})", ROJO, 34, pie=f"Baseline: {pc(b_ab['recall_queja_directo_test'], 0)} ({q_dir_b} de {N['quejas_test']})")
+    tile(s, 6.75, 1.5, 2.9, 1.9, pc(ab_beto['recall_queja_con_revision_test'], 0), f"BETO: de las quejas, con\nrevisión humana ({q_rev_e} de {N['quejas_test']})", VERDE, 34, pie=f"Baseline: {pc(b_ab['recall_queja_con_revision_test'], 0)} ({q_rev_b} de {N['quejas_test']})")
+    tile(s, 9.85, 1.5, 2.9, 1.9, pc(ab_beto['cobertura_test'], 0), f"BETO: decide solo el sistema\n(meta: {pc(META['cobertura'], 0)})", AMBAR, 34, pie=f"Baseline: {pc(b_ab['cobertura_test'], 0)}")
+    tabla(s, 0.55, 3.65, 7.3, [2.4, 1.6, 1.6, 1.7], [['Test', 'Baseline', 'BETO', 'Meta']] + [['F1 macro', f(B['f1_test']), f(BETO['f1_test_media']), f"+{f(META['mejora_f1'], 2)}"], ['Decide solo', pc(b_ab['cobertura_test']), pc(ab_beto['cobertura_test']), '≥ ' + pc(META['cobertura'], 0)],
           ['Quejas con revisión', pc(b_ab['recall_queja_con_revision_test']), pc(ab_beto['recall_queja_con_revision_test']), '≥ ' + f(META['recall_critica'], 2)], ['A revisión humana', pc(b_ab['revision_test']), pc(ab_beto['revision_test']), '—']], size=12.5, rh=0.5)
-    text(s, 8.2, 3.45, 4.6, 3.4, [P('Cómo leerlo', 16, NAVY, True, space=4),
-          P(('El intervalo de la diferencia **apenas excluye el 0**: BETO probablemente mejora, pero con 59 quejas no se puede precisar cuánto.' if 0 < lo < META['mejora_f1'] else ('El intervalo **incluye el 0**: no hay evidencia suficiente de que BETO sea mejor.' if lo <= 0 else 'El intervalo **excluye el 0** con margen.')), 14, INK, bullet=True),
+    text(s, 8.2, 3.6, 4.6, 3.3, [P('Cómo leerlo', 16, NAVY, True, space=4),
+          P((f"El intervalo de la diferencia de F1 (semilla 42: {f(lo)} a {f(BETO['diff_ic'][1])}) **apenas excluye el 0**: BETO probablemente mejora, pero con 59 quejas no se puede precisar cuánto." if 0 < lo < META['mejora_f1'] else ('El intervalo **incluye el 0**: no hay evidencia suficiente de que BETO sea mejor.' if lo <= 0 else 'El intervalo **excluye el 0** con margen.')), 14, INK, bullet=True),
           P(f"Son **puntos de operación distintos**: BETO decide solo el {pc(ab_beto['cobertura_test'], 0)} y deja {pc(ab_beto['revision_test'], 0)} a revisión; el baseline deja {pc(b_ab['revision_test'], 0)}.", 14, INK, bullet=True),
           P(f"Recall de BETO {pc(ab_beto['recall_queja_con_revision_test'])}: unas {int(round((b_ab['recall_queja_con_revision_test'] - ab_beto['recall_queja_con_revision_test']) * N['quejas_test']))} quejas menos que el baseline en test, bajo la meta de {f(META['recall_critica'], 2)}.", 14, INK, bullet=True)])
-    text(s, 0.55, 6.2, 7.3, 0.8, [P('Media de 3 semillas en F1; intervalo, abstención y matrices con la semilla 42. Costo de BETO: unos 110 millones de parámetros; GPU para responder en ~9 ms (CPU: 143 ms).', 12.5, MUTED, True, space=0)])
+    text(s, 0.55, 6.3, 7.3, 0.7, [P('F1: media de 3 semillas; las demás cifras de BETO, con la semilla 42. Costo de BETO: unos 110 millones de parámetros; GPU para responder en ~9 ms (CPU: 143 ms).', 12.5, MUTED, True, space=0)])
 else:
     rect(s, 0.55, 1.5, 6.1, 5.3, fill='FFF3DC', line=AMBAR, lw=2, r=0.06)
     text(s, 0.8, 1.6, 5.6, 0.5, [P('PENDIENTE: ejecutar BETO en Colab', 18, AMBAR, True, space=0)])
