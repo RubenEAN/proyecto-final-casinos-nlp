@@ -76,9 +76,9 @@ S = [
   "Cuidamos que la comparación sea justa: mismos datos y métricas, todo se ajusta solo con entrenamiento, el umbral se elige con validación y **el conjunto de prueba se mide una sola vez**. "
   "Como la prueba es pequeña, damos intervalos de confianza del 95 % con bootstrap y probamos robustez con frases en pares, textos fuera de dominio y perturbaciones.", None),
  (8, 'Resultado del baseline', 'M', 'Modelado', 1.5,
-  f"El baseline logra un F1 macro de **{f(B['f1_test'])}** en prueba, con un intervalo de {f(B['ic_f1'][0])} a {f(B['ic_f1'][1])}. Detecta {pc(B['recall_test'], 0)} de las quejas por sí solo, {q_b_dir} de {N['quejas_test']}. "
-  f"Cuando los casos dudosos pasan a una persona, encuentra el **{pc(ab_b['recall_queja_con_revision_test'])}**, es decir {q_b} de {N['quejas_test']}, y cumple la meta de 0,90. "
-  f"El costo: el sistema decide solo el {pc(ab_b['cobertura_test'])} de los comentarios, por debajo de la meta del 75 %, y manda a revisión el {pc(ab_b['revision_test'], 0)}. "
+  f"El baseline logra un F1 macro de **{f(B['f1_test'])}** en prueba, con un intervalo de {f(B['ic_f1'][0])} a {f(B['ic_f1'][1])}. Ojo con la tabla: son las seis variantes en validación, solo para elegir la mejor; los recuadros de arriba son el resultado en prueba. "
+  f"Veamos las quejas. De {N['quejas_test']} quejas en prueba, el modelo etiqueta {q_b_dir} como queja, el {pc(B['recall_test'], 0)}. Otras {q_b - q_b_dir} pasan a una persona porque el modelo no está seguro. Eso da **{q_b} de {N['quejas_test']}, el {pc(ab_b['recall_queja_con_revision_test'])}**, y cumple la meta de 0,90. "
+  f"Se nos escapan {N['quejas_test'] - q_b}, que el modelo clasificó con seguridad como otra cosa. Y para lograrlo se revisa casi un tercio de los comentarios: el sistema decide solo el {pc(ab_b['cobertura_test'])}, por debajo de la meta del 75 %. "
   f"La clase más difícil es la mixta, con F1 de {f(B['f1_mixta_test'])}, y en prueba solo hay {N['mixtas_test']}.", None),
  (9, 'BETO frente al baseline', 'M', 'Modelado', 2.0,
   f"BETO obtiene un F1 macro medio de **{f(BE['f1_test_media'])}**, con una desviación de {f(BE['f1_test_std'])} entre semillas: {f(dm)} más que el baseline. "
@@ -117,6 +117,8 @@ S = [
   f"Para elegir BETO pedimos tres condiciones: un recall de quejas de al menos {f(META['recall_critica'], 2)} en una muestra auditada; medir la versión en minúsculas frente a las MAYÚSCULAS; y contar con GPU o aceptar unos {lat['cpu_p95']:.0f} milisegundos en CPU. "
   "Si no se cumplen, seguimos con el baseline. Antes falta validar las metas con el cliente, confirmar la licencia y revisar los datos personales. Gracias; quedamos atentos a sus preguntas.", None),
 ]
+EXTRA = {8: ("**Si preguntan por 0,646 y 0,626:** es el mismo modelo en dos conjuntos distintos. 0,646 es en validación, con el que se eligió entre seis variantes; 0,626 es en prueba, medido una sola vez. La diferencia está dentro del intervalo de confianza. "
+             f"**Si preguntan por el {pc(ab_b['recall_queja_con_revision_test'], 0)}:** supone que la persona que revisa reconoce las quejas que le llegan; de los {int(round(ab_b['revision_test'] * N['test']))} comentarios que van a revisión, solo unos 18 son quejas, y ese es el costo de revisar.")}
 DEMO = [
  ('0:00', 'Cambiar al navegador con `app/demo.html` ya abierto (zoom al 125 %).', '"Esta es la demo: un solo archivo HTML que funciona sin internet y sin enviar datos a ningún servidor. Pega un comentario y devuelve la decisión."'),
  ('0:15', 'Escribir **Las máquinas no pagan nunca** y pulsar Analizar.', '"Una queja clara: lo clasifica como queja con 95 % de confianza y **lo decide el sistema**. Abajo muestra las palabras que empujan la decisión."'),
@@ -179,6 +181,7 @@ for n, t, r, bl, mi, txt, tr in S:
     doc_items.append(('meta', f'{ROLES[r]} · {bl} · {int(mi)}:{int(round((mi % 1) * 60)):02d} min · acumulado {int(cumm)}:{int(round((cumm % 1) * 60)):02d}'))
     if n == 13: Pp('Ver el guion paso a paso en la sección 4. Antes de la diapositiva: avisar "les muestro el sistema funcionando" y cambiar a la ventana del navegador.')
     else: Q(txt)
+    if n in EXTRA: Pp(EXTRA[n])
     if tr: Pp('**Transición:** ' + tr)
 H1('4. Guion de la demostración (2 minutos)')
 Pp('**Preparación:** abrir `app/demo.html` en el navegador (funciona sin internet), dejarlo en la pestaña "Un comentario" y con el control de confianza en 0,50. Los resultados de abajo son los reales de esta versión de la demo.')
