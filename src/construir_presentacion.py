@@ -326,16 +326,58 @@ text(s, 7.65, 1.6, 4.95, 0.45, [P('Declaración de uso de IA generativa', 16, AM
 text(s, 7.65, 2.1, 4.95, 3.1, [P('Un asistente de IA (Claude) generó borradores del código, el notebook y los documentos.', 13.5, INK, bullet=True), P('El equipo verifica el código, las cifras y las afirmaciones.', 13.5, INK, bullet=True),
                             P('Solo se presentan como evidencia las cifras guardadas en results/.', 13.5, INK, bullet=True), P('No se enviaron datos confidenciales a servicios externos.', 13.5, INK, bullet=True)])
 
-# 18-19 Observabilidad (imágenes completas de respaldo, hechas por el equipo)
-try:
-    from PIL import Image as _Im
-except Exception: _Im = None
-for _n in (1, 2):
-    _ruta = img(f'observabilidad{_n}.png')
-    if os.path.exists(_ruta):
-        s = Slide(); S.append(s)
-        if _Im is not None: _c = _Im.open(_ruta).convert('RGB').getpixel((2, 2)); rect(s, 0, 0, W_IN, H_IN, fill='%02X%02X%02X' % _c)
-        pic(s, 0, 0, W_IN, H_IN, _ruta)
+# 19-20 Observabilidad (contenido del equipo, rediseñado con el estilo de la presentación)
+conteo = df.sentimiento.value_counts(); n_tot = len(df)
+def panel(s, x, y, w, h, titulo):
+    rect(s, x, y, w, h, fill=PANEL, line=LINE, r=0.08); text(s, x + 0.2, y + 0.1, w - 0.4, 0.4, [P(titulo, 12.5, AZUL, True, space=0)])
+
+s = nueva('Observabilidad: de datos en caliente a decisiones en segundos', 'G')
+text(s, 0.55, 1.27, 12.2, 0.45, [P('El clasificador HTML genera señales; OpenTelemetry y Elastic las convierten en visibilidad operativa.', 15, MUTED, space=0)])
+y0, hp = 1.85, 3.75
+panel(s, 0.55, y0, 4.1, hp, 'BASE DEL CORPUS · DATASET')
+text(s, 0.75, y0 + 0.5, 3.7, 0.8, [P(miles(n_tot), 38, NAVY, True, space=0)], anchor='m')
+text(s, 0.75, y0 + 1.25, 3.7, 0.4, [P('reseñas históricas analizadas', 13.5, MUTED, space=0)])
+for k_, (nom_, cl_, col_) in enumerate([('Positivas', 'positiva', VERDE), ('Negativas', 'negativa', ROJO), ('Mixtas', 'mixta', AMBAR), ('No mencionado', 'no_mencionado', 'A9B6CF')]):
+    v_ = int(conteo[cl_]); yy = y0 + 1.8 + k_ * 0.38
+    text(s, 0.75, yy, 1.35, 0.32, [P(nom_, 12, INK, space=0)], anchor='m'); rect(s, 2.1, yy + 0.07, 1.8 * v_ / conteo.max(), 0.18, fill=col_, r=0.5)
+    text(s, 3.95, yy, 0.65, 0.32, [P(miles(v_), 12, INK, True, 'r', space=0)], anchor='m')
+text(s, 0.75, y0 + 3.35, 3.7, 0.32, [P(f"Fuente: corpus CSV · {df.periodo.min()[:4]}–{df.periodo.max()[:4]}", 11, MUTED, space=0)])
+panel(s, 4.85, y0, 3.8, hp, 'FLUJO EN VIVO · PROPUESTO')
+for k_, (nom_, desc_, fill_, fc_) in enumerate([('HTML / modelo', 'Clasifica comentarios', 'EAF1FF', INK), ('OpenTelemetry', 'Captura métricas y trazas', 'EAF1FF', INK), ('Elastic + Kibana', 'Correlación, alertas, paneles', AZUL, 'FFFFFF')]):
+    yy = y0 + 0.6 + k_ * 1.05
+    rect(s, 5.05, yy, 3.4, 0.8, fill=fill_, line=AZUL, r=0.1)
+    text(s, 5.2, yy + 0.02, 3.1, 0.76, [P(nom_, 15, fc_, True, space=1), P(desc_, 11.5, ('FFFFFF' if fill_ == AZUL else MUTED), space=0)], anchor='m')
+    if k_ < 2: text(s, 5.05, yy + 0.8, 3.4, 0.25, [P('↓', 14, AZUL, True, 'c', space=0)], anchor='m', pad=0)
+panel(s, 8.85, y0, 3.9, hp, 'PANEL EN CALIENTE · ILUSTRATIVO')
+for k_, (lab_, val_, col_) in enumerate([('CLASIFICACIONES/MIN', '↑ flujo', INK), ('LATENCIA P95', 'ms', INK), ('REVISIÓN HUMANA', '%', INK), ('ERRORES', 'alerta', ROJO)]):
+    xx = 9.05 + (k_ % 2) * 1.85; yy = y0 + 0.6 + (k_ // 2) * 1.1
+    rect(s, xx, yy, 1.75, 0.95, fill='EAF1FF', r=0.1); text(s, xx + 0.08, yy + 0.04, 1.6, 0.9, [P(lab_, 9.5, MUTED, True, space=2), P(val_, 18, col_, True, space=0)], anchor='m')
+text(s, 9.05, y0 + 2.85, 3.5, 0.3, [P('Ejemplo de tendencia · sin mediciones reales', 11, MUTED, space=0)])
+for k_, hh_ in enumerate([0.22, 0.30, 0.26, 0.38, 0.33, 0.46, 0.40, 0.52]):
+    rect(s, 9.15 + k_ * 0.42, y0 + 3.65 - hh_, 0.28, hh_, fill=AZUL, r=0.06)
+rect(s, 0.55, 5.75, 12.2, 0.7, fill=NAVY, r=0.08)
+text(s, 0.75, 5.75, 11.8, 0.7, [P('**VALOR:** detectar anomalías → localizar el problema → priorizar la revisión → reducir el tiempo de diagnóstico', 15.5, 'FFFFFF', space=0)], anchor='m')
+text(s, 0.55, 6.55, 12.2, 0.4, [P('Datos: corpus CSV adjunto  |  El flujo y las métricas en vivo son un diseño propuesto: requieren instrumentación.', 11, MUTED, space=0)])
+
+s = nueva('Observabilidad funcional: del comentario del cliente a una acción en línea', 'G')
+text(s, 0.55, 1.27, 12.2, 0.45, [P('PLN interpreta la voz del cliente; la observabilidad muestra señales, tendencias y alertas para actuar sin esperar al cierre del reporte.', 15, MUTED, space=0)])
+pasos = [('01 CAPTURAR', 'Comentario entrante', 'Web / app / canal', 'EAF1FF'), ('02 INTERPRETAR', 'PLN clasifica', 'Sentimiento + aspectos', 'EAF1FF'), ('03 OBSERVAR', 'Señales en vivo', 'Tasa + tendencia + confianza', 'EAF1FF'), ('04 ACTUAR', 'Decisión de negocio', 'Alerta + responsable', 'DDF3EA')]
+for k_, (a_, b_, c_, f_) in enumerate(pasos):
+    xx = 0.55 + k_ * 3.12
+    rect(s, xx, 1.9, 2.85, 1.3, fill=f_, line=(VERDE if k_ == 3 else AZUL), r=0.1)
+    text(s, xx + 0.15, 1.95, 2.55, 1.2, [P(a_, 11.5, (VERDE if k_ == 3 else AZUL), True, space=3), P(b_, 16.5, INK, True, space=2), P(c_, 12, MUTED, space=0)], anchor='m')
+    if k_ < 3: text(s, xx + 2.85, 1.9, 0.27, 1.3, [P('→', 18, AZUL, True, 'c', space=0)], anchor='m', pad=0)
+panel(s, 0.55, 3.4, 6.5, 2.2, 'OPORTUNIDAD RESPALDADA POR EL CORPUS')
+text(s, 0.75, 3.85, 2.6, 0.8, [P(miles(n_tot), 38, NAVY, True, space=0)], anchor='m'); text(s, 3.2, 3.85, 3.6, 0.8, [P('reseñas históricas', 15, MUTED, space=0)], anchor='m')
+text(s, 0.75, 4.7, 6.1, 0.45, [P(f"**{int(conteo['negativa'])} negativas  ·  {int(conteo['mixta'])} mixtas**", 19, INK, space=0)], anchor='m')
+text(s, 0.75, 5.15, 6.1, 0.35, [P('Base para diseñar categorías, umbrales y acciones.', 12, MUTED, space=0)])
+panel(s, 7.25, 3.4, 5.5, 2.2, 'EJEMPLO DE DECISIÓN EN CALIENTE · HIPOTÉTICO')
+text(s, 7.45, 3.85, 5.1, 0.55, [P('↑ Aumentan las quejas sobre tragamonedas', 19, INK, True, space=0)], anchor='m')
+text(s, 7.45, 4.45, 5.1, 0.4, [P('PLN detecta tema + sentimiento negativo', 13.5, MUTED, space=0)], anchor='m')
+text(s, 7.45, 4.95, 5.1, 0.5, [P('→ Alertar a operaciones y validar el problema', 15.5, VERDE, True, space=0)], anchor='m')
+rect(s, 0.55, 5.75, 12.2, 0.7, fill=NAVY, r=0.08)
+text(s, 0.75, 5.75, 11.8, 0.7, [P('**IMPACTO:** escuchar → detectar cambios → priorizar acciones → verificar si mejora la experiencia', 15.5, 'FFFFFF', space=0)], anchor='m')
+text(s, 0.55, 6.55, 12.2, 0.4, [P(f"Fuente histórica: CSV de {miles(n_tot)} reseñas. La detección en vivo requiere conectar nuevas entradas, instrumentar el HTML y definir reglas de actuación.", 11, MUTED, space=0)])
 
 # ------------------------------------------------------------------ render HTML
 def px(v): return v * 96
