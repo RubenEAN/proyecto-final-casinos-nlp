@@ -326,6 +326,17 @@ text(s, 7.65, 1.6, 4.95, 0.45, [P('Declaración de uso de IA generativa', 16, AM
 text(s, 7.65, 2.1, 4.95, 3.1, [P('Un asistente de IA (Claude) generó borradores del código, el notebook y los documentos.', 13.5, INK, bullet=True), P('El equipo verifica el código, las cifras y las afirmaciones.', 13.5, INK, bullet=True),
                             P('Solo se presentan como evidencia las cifras guardadas en results/.', 13.5, INK, bullet=True), P('No se enviaron datos confidenciales a servicios externos.', 13.5, INK, bullet=True)])
 
+# 18-19 Observabilidad (imágenes completas de respaldo, hechas por el equipo)
+try:
+    from PIL import Image as _Im
+except Exception: _Im = None
+for _n in (1, 2):
+    _ruta = img(f'observabilidad{_n}.png')
+    if os.path.exists(_ruta):
+        s = Slide(); S.append(s)
+        if _Im is not None: _c = _Im.open(_ruta).convert('RGB').getpixel((2, 2)); rect(s, 0, 0, W_IN, H_IN, fill='%02X%02X%02X' % _c)
+        pic(s, 0, 0, W_IN, H_IN, _ruta)
+
 # ------------------------------------------------------------------ render HTML
 def px(v): return v * 96
 def run_html(txt, st):
