@@ -4,6 +4,8 @@ Proyecto final de **Procesamiento de Lenguaje Natural** · Universidad EAN · Pe
 
 **Integrantes:** Edwin Alexander Alfonso Romero · Bresleny Yanira Benavides Cabiche · Rubén Darío Barbosa Brugés · Marissa Tatiana Alvarado Sampedro
 
+**Repositorio:** https://github.com/RubenEAN/proyecto-final-casinos-nlp (privado; el acceso se concede por invitación)
+
 ## Qué resuelve
 
 Un sistema que lee un comentario de un cliente de un casino, clasifica su sentimiento general (`negativa`, `mixta`, `positiva`, `no_mencionado`) y decide si lo procesa solo o lo envía a una persona. La **queja** (`negativa`) es la clase crítica: el error más costoso es no detectarla.
@@ -81,7 +83,14 @@ python src/construir_dataset.py --entrada RUTA/train_ampliado_102220.csv --salid
 
 ## Resultados
 
-Los resultados del baseline se generan al ejecutar el notebook y se guardan en `results/`. Los de BETO se agregan cuando se ejecute la sección 6 en Colab; hasta entonces, el informe y la presentación no pueden concluir sobre BETO.
+Resultados en test (59 quejas; el test se midió una sola vez):
+
+| Modelo | F1 macro | Quejas detectadas sin revisión | Quejas detectadas con revisión humana | Comentarios que pasan a revisión |
+| --- | --- | --- | --- | --- |
+| Baseline TF-IDF + regresión logística | 0,626 (IC 95 %: 0,554 a 0,690) | 79,7 % (47 de 59) | 93,2 % (55 de 59) | 31,4 % |
+| BETO (`beto_128`, media de 3 semillas) | 0,707 ± 0,011 | 86,4 % (51 de 59) | 88,1 % (52 de 59) | 5,1 % |
+
+BETO mejora el F1 en unos 0,08, pero con 59 quejas la diferencia es apenas distinguible del azar (intervalo de la diferencia con la semilla 42: 0,003 a 0,145). La recomendación es un **piloto en modo sombra con ambos modelos** antes de decidir. Los detalles están en `docs/Informe_Tecnico.pdf` y en las tablas de `results/`.
 
 ## Límites
 

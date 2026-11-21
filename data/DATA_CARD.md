@@ -14,7 +14,7 @@
 | Aspecto | Dato |
 | --- | --- |
 | Reseñas | 2.079 (1.455 train, 312 validation, 312 test) |
-| Periodo | 2016-12 a 2024-02; por año: 2017 (190), 2018 (376), 2019 (370), 2020 (169), 2021 (266), 2022 (338), 2023 (345), 2024 (24) |
+| Periodo | 2016-12 a 2024-02; por año: 2016 (1), 2017 (190), 2018 (376), 2019 (370), 2020 (169), 2021 (266), 2022 (338), 2023 (345), 2024 (24) |
 | Longitud | Mediana de 9 palabras; percentil 95 de 44; máximo de 256. 46 reseñas pasan de 64 palabras y 9, de 128 |
 | Idioma | Español rioplatense, informal, con errores de ortografía, abreviaturas y emojis |
 | Un solo lugar | Todas las reseñas son de un único casino. No hay otras sedes, ni canales (solo Google Maps) |

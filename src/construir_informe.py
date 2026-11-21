@@ -224,7 +224,7 @@ p('Tres baterías: (a) **29 frases** escritas por el equipo, en pares que cambia
 h2('3.6 Reproducibilidad')
 tabla(['Elemento', 'Valor'], [
     ['Semillas', '42 (y 43 y 44 para BETO)'], ['Versiones', 'Python 3.11, scikit-learn ' + conf_json['versiones']['sklearn'] + ', pandas ' + conf_json['versiones']['pandas'] + '; BETO: transformers 5.23.0 y torch 2.14.1 (Colab)'],
-    ['Hardware', 'Baselines: CPU de un portátil con Windows 11; BETO: GPU T4 de Colab'], ['Código y datos', 'Repositorio con README, requirements.txt, notebook ejecutable de inicio a fin y script que regenera el corpus'],
+    ['Hardware', 'Baselines: CPU de un portátil con Windows 11; BETO: GPU T4 de Colab'], ['Código y datos', 'Repositorio (https://github.com/RubenEAN/proyecto-final-casinos-nlp, privado) con README, requirements.txt, notebook ejecutable de inicio a fin y script que regenera el corpus'],
     ['Resultados', 'Todas las tablas salen de results/; el resumen consolidado está en results/resumen_final.json']], 'Tabla 4. Reproducibilidad', [3.4, 12.1])
 
 # ---- 4 Resultados
