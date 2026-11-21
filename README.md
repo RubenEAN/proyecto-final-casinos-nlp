@@ -28,14 +28,26 @@ proyecto_final_casinos_nlp/
 │   ├── construir_dataset.py        Regenera el corpus desde el CSV original (semilla 42)
 │   ├── construir_informe.py        Genera el informe técnico (DOCX y PDF) desde results/
 │   ├── construir_presentacion.py   Genera la versión base de la presentación; la entregada (`docs/Presentacion_Final.pptx`) es esa versión editada por el equipo en Drive
-│   ├── construir_guion.py          Genera el guion de la sustentación de 20 minutos (DOCX y PDF)
 │   ├── exportar_modelo_demo.py     Exporta el baseline a la demo del navegador
 │   └── verificar_demo.py           Comprueba que la demo da lo mismo que Python
 ├── app/                            Demostración (prototipo)
 ├── results/                        Tablas y modelos que genera el notebook
-├── docs/                           Informe técnico, presentación y matriz de riesgos
+├── docs/                           Informe técnico, presentación, matriz de riesgos y figuras
 ├── requirements.txt · requirements-colab.txt · environment.yml · .env.example · LICENSE
 ```
+
+## Dónde está cada entregable
+
+| N.º | Entregable | Ruta |
+| --- | --- | --- |
+| 1 | Repositorio (código, README, dependencias, licencia) | Raíz del repositorio: `README.md`, `requirements.txt`, `requirements-colab.txt`, `environment.yml`, `.env.example`, `LICENSE`, carpeta `src/` |
+| 2 | Notebook principal | `notebooks/Proyecto_Final_Casinos_NLP.ipynb` |
+| 3 | Dataset, diccionario y explicación de origen | `data/corpus_casinos_2100.csv`, `data/diccionario_datos.csv`, `data/DATA_CARD.md` |
+| 4 | Informe técnico | `docs/Informe_Tecnico.docx` y `docs/Informe_Tecnico.pdf` |
+| 5 | Presentación final | `docs/Presentacion_Final.pptx` |
+| 6 | Matriz de riesgos | `docs/Matriz_de_Riesgos.xlsx` |
+| 7 | Demostración | `app/demo.html` (se abre con doble clic en el navegador, sin instalar nada); instrucciones en `app/LEEME.md` |
+| — | Resultados de los experimentos | `results/` (tablas del baseline y de BETO) |
 
 ## Cómo ejecutarlo
 
