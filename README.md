@@ -27,7 +27,7 @@ proyecto_final_casinos_nlp/
 ├── src/
 │   ├── construir_dataset.py        Regenera el corpus desde el CSV original (semilla 42)
 │   ├── construir_informe.py        Genera el informe técnico (DOCX y PDF) desde results/
-│   ├── construir_presentacion.py   Genera la presentación (PPTX editable y PDF) desde results/
+│   ├── construir_presentacion.py   Genera la versión base de la presentación; la entregada (`docs/Presentacion_Final.pptx`) es esa versión editada por el equipo en Drive
 │   ├── construir_guion.py          Genera el guion de la sustentación de 20 minutos (DOCX y PDF)
 │   ├── exportar_modelo_demo.py     Exporta el baseline a la demo del navegador
 │   └── verificar_demo.py           Comprueba que la demo da lo mismo que Python
