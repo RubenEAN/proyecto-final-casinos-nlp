@@ -195,6 +195,38 @@ else:
                                        ['Cobertura automática', 'Meta: ≥ 75 %'], ['Latencia y costo', 'GPU frente a CPU'], ['Robustez ante MAYÚSCULAS', 'Fragilidad vista en el taller 4']], size=12.5, rh=0.5)
     text(s, 6.95, 5.8, 5.8, 1.0, [P('Hasta tenerlo, la recomendación se apoya solo en el baseline.', 14.5, MUTED, True, space=0)])
 
+# 9b Peso y tiempo de procesamiento
+cb = costo.set_index('modelo'); cbase, cbeto = cb.loc['Baseline'], cb.loc['BETO'] if 'BETO' in cb.index else None
+def num_(x): return float(re.findall(r'[\d.]+', str(x))[0])
+try:
+    import joblib
+    pipe_ = joblib.load(os.path.join(RES, 'baseline_modelo.joblib')); nf_w, nf_c = [len(tr_.vocabulary_) for _, tr_ in pipe_.steps[0][1].transformer_list]
+except Exception: nf_w = nf_c = None
+if cbeto is not None:
+    s = nueva('Peso y tiempo de procesamiento: BETO es mucho más pesado que el baseline', 'M')
+    p_b, p_e = num_(cbase['parametros']), num_(cbeto['parametros']); m_b, m_e = num_(cbase['tamano_MB']), num_(cbeto['tamano_MB'])
+    e_b, e_e = num_(cbase['entrenamiento_s']), num_(cbeto['entrenamiento_s']); l_b = num_(cbase['latencia_p95_ms'])
+    l_gpu = float(re.search(r'GPU ([\d.]+)', str(cbeto['latencia_p95_ms'])).group(1)); l_cpu = float(re.search(r'CPU ([\d.]+)', str(cbeto['latencia_p95_ms'])).group(1))
+    veces = lambda a, b: ('≈ ' + miles(round(b / a, -1 if b / a >= 100 else 0)) + ' veces') if b / a >= 1.5 else 'similar'
+    filas = [['Qué se mide', 'Baseline', 'BETO', 'BETO es…'],
+             ['Parámetros', f"{f(p_b, 2)} M", f"{f(p_e, 0)} M", veces(p_b, p_e)], ['Tamaño del modelo', f"{f(m_b, 1)} MB", f"≈ {int(m_e)} MB", veces(m_b, m_e)],
+             ['Entrenamiento (una corrida)', f"{f(e_b, 1)} s en CPU", f"{f(e_e, 0)} s en GPU", veces(e_b, e_e)],
+             ['Respuesta por comentario (p95), CPU', f"{f(l_b, 1)} ms", f"{f(l_cpu, 0)} ms", veces(l_b, l_cpu)], ['Respuesta por comentario (p95), GPU', '—', f"{f(l_gpu, 1)} ms", 'necesita GPU']]
+    tabla(s, 0.55, 1.4, 7.4, [3.4, 1.4, 1.4, 1.5], filas, size=12.5, rh=0.46)
+    # barras: latencia p95 por comentario (escala lineal)
+    text(s, 0.55, 4.35, 7.4, 0.4, [P('Tiempo de respuesta por comentario (p95, milisegundos)', 13.5, NAVY, True, space=0)])
+    for k_, (nom_, val_, col_) in enumerate([('Baseline · CPU', l_b, AZUL), ('BETO · GPU', l_gpu, VERDE), ('BETO · CPU', l_cpu, ROJO)]):
+        y_ = 4.85 + k_ * 0.55; ancho = max(0.08, 4.4 * val_ / l_cpu)
+        text(s, 0.55, y_, 1.7, 0.4, [P(nom_, 12.5, INK, space=0)], anchor='m'); rect(s, 2.3, y_ + 0.05, ancho, 0.3, fill=col_); text(s, 2.3 + ancho + 0.08, y_, 1.2, 0.4, [P(f"{f(val_, 1 if val_ < 20 else 0)} ms", 12.5, INK, True, space=0)], anchor='m')
+    rect(s, 8.3, 1.4, 4.5, 5.1, fill=PANEL, line=LINE, r=0.06)
+    text(s, 8.5, 1.48, 4.1, 0.45, [P('Por qué pesa más', 16, NAVY, True, space=0)])
+    bl = [P('**BETO:** cada palabra pasa por 12 capas de atención con 110 millones de pesos. Entrenarlo y responder rápido exige una GPU.', 13, INK, bullet=True, space=5),
+          P(f"**Baseline:** multiplica un vector de TF-IDF por una tabla de {miles(nf_w + nf_c) if nf_w else '~17.000'} características × 4 clases: unos {miles(round((nf_w + nf_c) * 4, -3)) if nf_w else '70.000'} coeficientes. Es una cuenta simple en cualquier CPU.", 13, INK, bullet=True, space=5)]
+    if nf_w: bl.append(P(f"**Dentro del baseline** pesan más los n-gramas de caracteres ({miles(nf_c)} características) que los de palabras ({miles(nf_w)}); la regresión logística entrena más lento que Naive Bayes o SVM.", 13, INK, bullet=True, space=5))
+    bl.append(P('**Consecuencia:** servir BETO exige GPU o aceptar unos ' + f"{f(l_cpu, 0)} ms en CPU; el baseline corre en cualquier equipo.", 13, INK, bullet=True, space=0))
+    text(s, 8.5, 2.0, 4.1, 4.4, bl)
+    text(s, 0.55, 6.5, 7.4, 0.5, [P('Baseline medido en este equipo (CPU); BETO en una GPU T4 de Colab. Los tiempos varían un poco de una ejecución a otra.', 11, MUTED, True, space=0)])
+
 # 10 Errores
 s = nueva('Dónde se equivoca: la mayor parte de los errores es una etiqueta ambigua', 'D')
 pic(s, 0.55, 1.4, 6.2, 5.1, img('f3_confusion.png'))

@@ -19,7 +19,7 @@ EDGE = next((e for e in [r'C:\Program Files\Google\Chrome\Application\chrome.exe
 J = lambda n: json.load(open(os.path.join(RES, n), encoding='utf-8'))
 resumen = J('resumen_final.json'); B, BE, N, META = resumen['baseline'], resumen['beto'], resumen['n'], resumen['meta']
 ab_b, ab_e = resumen['abstencion'][0], resumen['abstencion'][1]
-lat = J('beto_latencia.json'); costo = pd.read_csv(os.path.join(RES, 'costo_latencia.csv')); lat_b = float(costo.iloc[0]['latencia_p95_ms']); cr = pd.read_csv(os.path.join(RES, 'carga_revision_validacion.csv'))
+lat = J('beto_latencia.json'); costo_e_params = 109.9; costo = pd.read_csv(os.path.join(RES, 'costo_latencia.csv')); lat_b = float(costo.iloc[0]['latencia_p95_ms']); cr = pd.read_csv(os.path.join(RES, 'carga_revision_validacion.csv'))
 pert = pd.read_csv(os.path.join(RES, 'robustez_perturbaciones.csv')); rob = pd.read_csv(os.path.join(RES, 'robustez_pares.csv'))
 df = pd.read_csv(os.path.join(DATA, 'corpus_casinos_2100.csv'), encoding='utf-8-sig')
 err_e = pd.read_csv(os.path.join(RES, 'errores_validacion_beto.csv')); err_b = pd.read_csv(os.path.join(RES, 'errores_validacion_baseline.csv'))
@@ -70,7 +70,7 @@ S = [
   "La clase positiva es el 59 %. Un modelo que siempre respondiera positiva acertaría casi 6 de cada 10 sin aprender nada; por eso la métrica principal es el **F1 macro**, que da el mismo peso a las cuatro clases. "
   f"El 98 % de los textos tiene 64 palabras o menos. Las quejas son más largas que las positivas: la mediana es de 14 palabras frente a 9, y la de las mixtas es de 21. "
   "El segundo límite: es un solo casino y un solo canal. Lo que concluyamos no se extiende a otros lugares sin repetir la prueba.", "Con esto, el perfil de Machine Learning explica cómo comparamos los modelos."),
- (7, 'Cómo comparamos', 'M', 'Modelado', 1.5,
+ (7, 'Cómo comparamos', 'M', 'Modelado', 1.0,
   "Comparamos dos enfoques. El **baseline** es TF-IDF de palabras y caracteres con regresión logística; no es una red neuronal, es la vara de medir. Probamos 6 variantes y elegimos con validación. "
   "El segundo es **BETO**, un BERT preentrenado en español que ajustamos con las reseñas: dos configuraciones, con tres semillas cada una, en una GPU de Colab. "
   "Cuidamos que la comparación sea justa: mismos datos y métricas, todo se ajusta solo con entrenamiento, el umbral se elige con validación y **el conjunto de prueba se mide una sola vez**. "
@@ -80,39 +80,44 @@ S = [
   f"Veamos las quejas. De {N['quejas_test']} quejas en prueba, el modelo etiqueta {q_b_dir} como queja, el {pc(B['recall_test'], 0)}. Otras {q_b - q_b_dir} pasan a una persona porque el modelo no está seguro. Eso da **{q_b} de {N['quejas_test']}, el {pc(ab_b['recall_queja_con_revision_test'])}**, y cumple la meta de 0,90. "
   f"Se nos escapan {N['quejas_test'] - q_b}, que el modelo clasificó con seguridad como otra cosa. Y para lograrlo se revisa casi un tercio de los comentarios: el sistema decide solo el {pc(ab_b['cobertura_test'])}, por debajo de la meta del 75 %. "
   f"La clase más difícil es la mixta, con F1 de {f(B['f1_mixta_test'])}, y en prueba solo hay {N['mixtas_test']}.", None),
- (9, 'BETO frente al baseline', 'M', 'Modelado', 2.0,
+ (9, 'BETO frente al baseline', 'M', 'Modelado', 1.5,
   f"BETO obtiene un F1 macro medio de **{f(BE['f1_test_media'])}**, con una desviación de {f(BE['f1_test_std'])} entre semillas: {f(dm)} más que el baseline. "
   f"Con la corrida de la semilla 42, la diferencia es de {f(BE['diff'])} y su intervalo va de **{f(BE['diff_ic'][0])} a {f(BE['diff_ic'][1])}**. Ese intervalo apenas excluye el cero y es muy ancho: BETO probablemente mejora, pero con {N['quejas_test']} quejas no podemos precisar cuánto. "
   f"Los dos quedan en puntos de operación distintos. BETO decide solo el {pc(ab_e['cobertura_test'], 0)} y deja el {pc(ab_e['revision_test'], 0)} a revisión; el baseline deja el {pc(ab_b['revision_test'], 0)}. "
   f"Con esa revisión, BETO encuentra el {pc(ab_e['recall_queja_con_revision_test'])} de las quejas, {q_e} de {N['quejas_test']}: {q_b - q_e} menos que el baseline, bajo la meta de 0,90, aunque esa diferencia no es concluyente. "
   f"El costo de BETO: unos 110 millones de parámetros y una GPU para responder en cerca de {lat['gpu_p95']:.0f} milisegundos; en CPU tarda unos {lat['cpu_p95']:.0f}.", None),
- (10, 'Dónde se equivoca', 'D', 'Resultados', 1.0,
+ (10, 'Peso y tiempo de procesamiento', 'M', 'Modelado', 1.0,
+  f"El baseline pesa menos de 1 megabyte, se entrena en un par de segundos en una CPU y responde en unos {lat_b:.0f} milisegundos. "
+  f"BETO tiene {costo_e_params:.0f} millones de parámetros, unos 440 megabytes, tarda alrededor de un minuto por corrida en una GPU y responde en {lat['gpu_p95']:.0f} milisegundos con GPU, pero {lat['cpu_p95']:.0f} en CPU. "
+  "¿Por qué? El baseline multiplica un vector de TF-IDF por unos 70 mil coeficientes; BETO pasa cada palabra por 12 capas de atención con 110 millones de pesos. "
+  "Dentro del baseline, los n-gramas de caracteres pesan más que los de palabras. Por eso BETO necesita una GPU, o aceptar la espera en CPU.", None),
+ (11, 'Dónde se equivoca', 'D', 'Resultados', 1.0,
   f"Miremos los errores en validación: el baseline se equivoca en {len(err_b)} de {N['validation']} reseñas y BETO en {len(err_e)}. "
   f"En BETO, **{amb} de {len(err_e)} errores** son confusiones entre positiva y no mencionado: son elogios generales, como \"excelente pasatiempo\", que a veces se anotaron como positivos y a veces no. "
   "Es un problema de etiquetas, no de modelo. Se arregla con una guía de anotación, no con un modelo más grande. Las causas que mostramos las asigna una regla automática y el equipo debe revisarlas.", None),
- (11, 'Cuánto decide solo el sistema', 'D', 'Resultados', 1.0,
+ (12, 'Cuánto decide solo el sistema', 'D', 'Resultados', 1.0,
   "Como cada modelo usa un umbral distinto, comparar sus recalls directamente confunde. Entonces fijamos **la misma carga de revisión** y lo medimos en validación. "
   f"Con el 5 % de casos a revisión, BETO encuentra {int(g('BETO', 5, 'quejas_encontradas'))} de {int(g('BETO', 5, 'quejas_totales'))} quejas y el baseline {int(g('Baseline', 5, 'quejas_encontradas'))}; el baseline necesita cerca del 20 % para igualarlo. "
   f"Con una carga alta, del 31 %, el baseline gana por {int(g('Baseline', 31, 'quejas_encontradas') - g('BETO', 31, 'quejas_encontradas'))} quejas. Y en todos los niveles BETO acierta más en lo que decide solo. "
   "Son 57 quejas y una sola corrida de BETO: es un indicio que el piloto debe confirmar.", None),
- (12, 'Robustez', 'D', 'Resultados', 1.0,
+ (13, 'Robustez', 'D', 'Resultados', 1.0,
   "Probamos 35 casos escritos por nosotros. El baseline acierta todos los de contraste, pero falla en orden de palabras y en doble negación, porque TF-IDF no ve el orden. BETO sí acierta el orden, 2 de 2. "
   f"Pero BETO tiene una fragilidad: en MAYÚSCULAS su F1 macro cae de {f(pb.loc['original', 'f1_macro'])} a **{f(pb.loc['MAYÚSCULAS', 'f1_macro'])}**, y cambia el {str(pb.loc['MAYÚSCULAS', 'cambian_pct']).replace('.', ',')} % de las predicciones. "
   "Pasar el texto a minúsculas debería corregirlo, pero falta medirlo. "
   "Con textos sin sentido, el baseline les asigna una clase con 56 % a 66 % de confianza, sobre el umbral, así que la confianza sola los dejaría pasar; la **guardia de vocabulario** los envía a revisión, 6 de 6, y solo marca el 3,5 % de las reseñas reales.",
   "Y ahora el perfil de Machine Learning nos muestra el sistema funcionando."),
- (13, 'Demostración', 'M', 'Demo', 2.0, 'Ver el guion de la demo en la sección 4.', "Volvemos a las diapositivas: el perfil de Gerencia IA cierra con costos, riesgos y la recomendación."),
- (14, 'Costo y caso de valor', 'G', 'Modelado', 1.0,
-  f"El baseline pesa menos de 1 megabyte y responde en unos {lat_b:.0f} milisegundos en una CPU común. BETO tiene unos 110 millones de parámetros y necesita GPU para ser rápido. "
+ (14, 'Demostración', 'M', 'Demo', 2.0, 'Ver el guion de la demo en la sección 4.', "Volvemos a las diapositivas: el perfil de Gerencia IA cierra con costos, riesgos y la recomendación."),
+ (15, 'Costo y caso de valor', 'G', 'Modelado', 1.0,
+  f"Ya vimos que BETO pesa mucho más; ¿qué significa eso en costos? Hay que sumar la GPU para servirlo, la revisión humana de los casos dudosos, el monitoreo y el reentrenamiento. Falta cotizar la GPU. "
   f"Un ejemplo ilustrativo: con 3.000 comentarios al mes y 3 minutos por comentario, el baseline ahorra unas {horas(ab_b['cobertura_test']):.0f} horas de lectura al mes y BETO unas {horas(ab_e['cobertura_test']):.0f}. "
   "Son supuestos nuestros: no tenemos el volumen ni el costo por hora reales del cliente. Y el valor desaparece si el recall de quejas baja de 0,90.", None),
- (15, 'Riesgos y gobierno', 'G', 'Riesgos', 2.0,
+ (16, 'Riesgos y gobierno', 'G', 'Riesgos', 2.0,
   "La matriz de riesgos del archivo de Excel tiene 17 riesgos con su control. Los principales: quejas no detectadas, revisión por encima de la capacidad del equipo, errores con confianza alta o fuera de dominio, etiquetas ambiguas con muestra pequeña, licencia y uso de los datos, y uso en otro lugar sin probar. "
   "Para controlarlos: revisión humana, modo sombra, calibración, auditoría y la guardia de vocabulario. "
   "El gobierno: el dueño del modelo es Gerencia IA, con un suplente de Machine Learning. Se monitorean ocho indicadores, entre ellos el recall auditado, la proporción enviada a revisión y la confianza mediana. "
   "El modelo se **suspende** si el recall auditado baja de 0,90, si la revisión supera la capacidad del equipo o si cambia el tipo de comentarios; el respaldo es el baseline con revisión humana. "
   "En privacidad, enmascaramos teléfonos y nombres, y todavía falta revisar a mano una muestra.", None),
- (16, 'Recomendación', 'G', 'Recomendación', 1.0,
+ (17, 'Recomendación', 'G', 'Recomendación', 1.0,
   "Nuestra recomendación es un **piloto en modo sombra con ambos modelos**: corren en paralelo sin decidir nada, así que probar los dos no añade riesgo. BETO es el candidato principal porque necesita mucha menos revisión para un recall parecido; el baseline es el respaldo. "
   f"Para elegir BETO pedimos tres condiciones: un recall de quejas de al menos {f(META['recall_critica'], 2)} en una muestra auditada; medir la versión en minúsculas frente a las MAYÚSCULAS; y contar con GPU o aceptar unos {lat['cpu_p95']:.0f} milisegundos en CPU. "
   "Si no se cumplen, seguimos con el baseline. Antes falta validar las metas con el cliente, confirmar la licencia y revisar los datos personales. Gracias; quedamos atentos a sus preguntas.", None),
@@ -167,8 +172,8 @@ TAB(['Diap.', 'Título', 'Bloque', 'Rol que presenta', 'Minutos', 'Acumulado'], 
 tot = {r: sum(mi for _, _, rr, _, mi, _, _ in S if rr == r) for r in ROLES}; blq = {}
 for _, _, _, bl, mi, _, _ in S: blq[bl] = blq.get(bl, 0) + mi
 TAB(['Rol', 'Minutos', 'Diapositivas'], [[ROLES[r], f'{tot[r]:g}', ', '.join(str(n) for n, _, rr, *_ in S if rr == r)] for r in ROLES], [5, 2.5, 8])
-Pp('**Distribución por bloques pedida en los lineamientos:** problema ' + f"{blq['Problema']:g}" + ' min, datos ' + f"{blq['Datos']:g}" + ', modelado ' + f"{blq['Modelado']:g}" + ', resultados ' + f"{blq['Resultados']:g}" + ', demo ' + f"{blq['Demo']:g}" + ', riesgos ' + f"{blq['Riesgos']:g}" + ', recomendación ' + f"{blq['Recomendación']:g}" + f". Total: {sum(blq.values()):g} minutos. El costo y el caso de valor (diapositiva 14) cuentan dentro del bloque de modelado y se presentan después de la demo. La diapositiva 17 (anexo) no se presenta: queda de respaldo para preguntas.")
-Pp('**Si el equipo tiene cuatro voces:** el bloque de Machine Learning se puede repartir. Una persona presenta las diapositivas 7 a 9 (modelado) y otra hace la demostración (13), que es práctica y se beneficia de un ritmo distinto.')
+Pp('**Distribución por bloques pedida en los lineamientos:** problema ' + f"{blq['Problema']:g}" + ' min, datos ' + f"{blq['Datos']:g}" + ', modelado ' + f"{blq['Modelado']:g}" + ', resultados ' + f"{blq['Resultados']:g}" + ', demo ' + f"{blq['Demo']:g}" + ', riesgos ' + f"{blq['Riesgos']:g}" + ', recomendación ' + f"{blq['Recomendación']:g}" + f". Total: {sum(blq.values()):g} minutos. El costo y el caso de valor (diapositiva 15) cuentan dentro del bloque de modelado y se presentan después de la demo. La diapositiva 18 (anexo) no se presenta: queda de respaldo para preguntas.")
+Pp('**Si el equipo tiene cuatro voces:** el bloque de Machine Learning se puede repartir. Una persona presenta las diapositivas 7 a 10 (modelado) y otra hace la demostración (14), que es práctica y se beneficia de un ritmo distinto.')
 
 H2('2. Cómo usar el guion')
 BUL(['Cada diapositiva tiene una cifra principal. Se dice la cifra y se explica con el texto de abajo; no se lee la diapositiva.', 'El texto está escrito para hablarse a unas 130 palabras por minuto. Al lado de cada título aparece el tiempo y el acumulado.',
@@ -179,14 +184,14 @@ for n, t, r, bl, mi, txt, tr in S:
     cumm += mi
     H2(f'Diapositiva {n} · {t}')
     doc_items.append(('meta', f'{ROLES[r]} · {bl} · {int(mi)}:{int(round((mi % 1) * 60)):02d} min · acumulado {int(cumm)}:{int(round((cumm % 1) * 60)):02d}'))
-    if n == 13: Pp('Ver el guion paso a paso en la sección 4. Antes de la diapositiva: avisar "les muestro el sistema funcionando" y cambiar a la ventana del navegador.')
+    if n == 14: Pp('Ver el guion paso a paso en la sección 4. Antes de la diapositiva: avisar "les muestro el sistema funcionando" y cambiar a la ventana del navegador.')
     else: Q(txt)
     if n in EXTRA: Pp(EXTRA[n])
     if tr: Pp('**Transición:** ' + tr)
 H1('4. Guion de la demostración (2 minutos)')
 Pp('**Preparación:** abrir `app/demo.html` en el navegador (funciona sin internet), dejarlo en la pestaña "Un comentario" y con el control de confianza en 0,50. Los resultados de abajo son los reales de esta versión de la demo.')
 TAB(['Tiempo', 'Qué hacer', 'Qué decir'], [[a, b, c] for a, b, c in DEMO], [1.6, 6.2, 9.2])
-NOTE('Plan B si la demo falla: volver a la diapositiva 13, que tiene capturas de los tres casos (un comentario, texto sin sentido y varios comentarios), y narrar con ellas. La demo es un prototipo del baseline y decide con la misma regla que el informe; no ejecuta BETO.')
+NOTE('Plan B si la demo falla: volver a la diapositiva 14, que tiene capturas de los tres casos (un comentario, texto sin sentido y varios comentarios), y narrar con ellas. La demo es un prototipo del baseline y decide con la misma regla que el informe; no ejecuta BETO.')
 H1('5. Preguntas probables')
 for q_, a_ in PREG:
     doc_items.append(('qa', q_, a_))
@@ -262,7 +267,7 @@ def main():
     print('Diap. | min | palabras | palabras/min')
     tw = 0
     for n, t, r, bl, mi, txt, tr in S:
-        if n == 13: continue
+        if n == 14: continue
         w = len(re.findall(r'\w+', txt + ' ' + (tr or ''))); tw += w; print(f'{n:>5} | {mi:>4} | {w:>8} | {w / mi:>6.0f}')
     print('Total palabras (sin demo):', tw, '· minutos sin demo:', sum(s[4] for s in S) - 2)
     docx_p = os.path.join(DOCS, 'Guion_Sustentacion.docx'); to_docx(docx_p)
