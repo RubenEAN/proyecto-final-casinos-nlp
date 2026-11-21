@@ -163,7 +163,8 @@ tile(s, 0.55, 1.5, 2.9, 1.7, f(B['f1_test']), f"F1 macro en test\nIC 95 %: {f(B[
 tile(s, 3.65, 1.5, 2.9, 1.7, pc(B['recall_test'], 0), f"de las quejas, directo\n({int(round(B['recall_test'] * N['quejas_test']))} de {N['quejas_test']})", ROJO, 34)
 tile(s, 6.75, 1.5, 2.9, 1.7, pc(b_ab['recall_queja_con_revision_test'], 0), 'de las quejas, con revisión\nhumana de los casos dudosos', VERDE, 34)
 tile(s, 9.85, 1.5, 2.9, 1.7, pc(b_ab['cobertura_test'], 0), f"decide solo el sistema\n(meta: {pc(META['cobertura'], 0)})", AMBAR, 34)
-tabla(s, 0.55, 3.5, 7.6, [4.2, 1.1, 1.1, 1.2], [['Baseline (validación, 312 reseñas)', 'F1 macro', 'Recall', 'F1 mixta']] + [[r.modelo.replace('TF-IDF ', '').replace(' + ', ' + '), f(r.f1_macro_val), f(r.recall_negativa_val), f(r.f1_mixta_val)] for r in base_val.itertuples()], size=11.5, rh=0.42)
+tabla(s, 0.55, 3.5, 7.6, [4.2, 1.1, 1.1, 1.2], [['Variantes en validación (312 reseñas, para elegir)', 'F1 macro', 'Recall', 'F1 mixta']] + [[r.modelo.replace('TF-IDF ', '').replace(' + ', ' + '), f(r.f1_macro_val), f(r.recall_negativa_val), f(r.f1_mixta_val)] for r in base_val.itertuples()], size=11.5, rh=0.42)
+text(s, 0.55, 6.5, 7.6, 0.45, [P('Los recuadros de arriba son el resultado en prueba (test), medido una sola vez; la tabla es validación, solo para elegir la variante.', 11.5, MUTED, True, space=0)])
 text(s, 8.5, 3.45, 4.3, 3.4, [P('Cómo leerlo', 16, NAVY, True, space=4), P('El recall con revisión **cumple la meta** de 0,90; la cobertura **no llega** a 75 %.', 14.5, INK, bullet=True), P(f"Las 3 regresiones logísticas quedan juntas (F1 de {f(lr_.min(), 2)} a {f(lr_.max(), 2)}): con 312 reseñas esa diferencia es ruido. Naive Bayes tiene el mayor recall, pero no acierta ninguna mixta.", 14.5, INK, bullet=True),
                           P(f"La clase mixta es la más difícil (F1 de {f(B['f1_mixta_test'])}): solo hay {N['mixtas_test']} en test.", 14.5, INK, bullet=True)])
 
